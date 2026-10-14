@@ -470,23 +470,23 @@ export default function Home() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  });
+  }, [selectedProject]);
 
   useEffect(() => {
     if (!galleryProject) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeGallery();
-      if (e.key === "ArrowRight") galleryNext();
-      if (e.key === "ArrowLeft") galleryPrev();
+      if (e.key === "Escape") setGalleryProject(null);
+      if (e.key === "ArrowRight") setGalleryIndex((i) => (i + 1) % galleryProject.gallery.length);
+      if (e.key === "ArrowLeft") setGalleryIndex((i) => (i - 1 + galleryProject.gallery.length) % galleryProject.gallery.length);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  });
+  }, [galleryProject]);
 
   return (
-    <div className={`min-h-screen bg-[#FFFBF7] text-[#2D2420] ${isRTL ? "font-[var(--font-ibm-arabic)]" : ""}`} dir={isRTL ? "rtl" : "ltr"}>
+    <div className={`min-h-screen w-full max-w-full overflow-x-clip bg-[#FFFBF7] text-[#2D2420] ${isRTL ? "font-[var(--font-ibm-arabic)]" : ""}`} dir={isRTL ? "rtl" : "ltr"}>
       <header className="sticky top-0 z-50 bg-[#FFFBF7]/80 backdrop-blur-xl border-b border-[#E8DDD3]">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 h-[72px] flex items-center justify-between">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-[64px] sm:h-[72px] flex items-center justify-between gap-2">
           <a href="#home" className="flex items-center gap-3">
             <img src="/kasmilogo.png" alt="Kasmi logo" className="w-10 h-10 rounded-xl object-contain bg-white border border-[#E8DDD3] p-1 shadow-sm" />
             <div className="hidden sm:block">
@@ -526,7 +526,7 @@ export default function Home() {
 
         <AnimatePresence>
           {mobileOpen && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="lg:hidden border-t border-[#E8DDD3] bg-[#FFFBF7] px-6 py-6 space-y-4">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="lg:hidden border-t border-[#E8DDD3] bg-[#FFFBF7] px-4 sm:px-6 py-6 space-y-4 overflow-hidden">
               {Object.entries(t.nav).map(([key, label]) => (
                 <a key={key} onClick={() => setMobileOpen(false)} href={`#${key === "home" ? "home" : key}`} className="block text-sm font-medium">
                   {label}
@@ -544,86 +544,86 @@ export default function Home() {
         </AnimatePresence>
       </header>
 
-      <section id="home" className="max-w-[1280px] mx-auto px-6 lg:px-8 pt-12 lg:pt-20 pb-16">
+      <section id="home" className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 lg:pt-20 pb-12 sm:pb-16 overflow-x-clip">
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-8 items-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }}>
-            <div className="inline-flex items-center gap-2 bg-white border border-[#E8DDD3] rounded-full px-4 py-2 text-xs font-medium shadow-sm mb-6">
-              <span className="w-2 h-2 rounded-full bg-[#7A8B6F] animate-pulse" />
-              {t.hero.badge}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} className="min-w-0">
+            <div className="inline-flex max-w-full flex-wrap items-center gap-2 bg-white border border-[#E8DDD3] rounded-full px-4 py-2 text-xs font-medium shadow-sm mb-6">
+              <span className="w-2 h-2 shrink-0 rounded-full bg-[#7A8B6F] animate-pulse" />
+              <span className="truncate">{t.hero.badge}</span>
               <span className="hidden sm:inline text-[#8B7355]">• Remote worldwide</span>
             </div>
 
             <p className="text-[#8B7355] font-medium tracking-wide text-sm mb-2">{t.hero.hello}</p>
-            <h1 className="font-serif text-[42px] lg:text-[56px] font-bold leading-[0.95] tracking-tight">
+            <h1 className="font-serif text-[32px] sm:text-[42px] lg:text-[56px] font-bold leading-[1.05] sm:leading-[0.95] tracking-tight break-words">
               <span className="text-[#5A2A3A]">{t.hero.name}</span>
             </h1>
-            <h2 className="font-serif text-[32px] lg:text-[44px] font-light text-[#4A3B32] leading-none mt-1">{t.hero.role}</h2>
+            <h2 className="font-serif text-[24px] sm:text-[32px] lg:text-[44px] font-light text-[#4A3B32] leading-snug sm:leading-none mt-1 break-words">{t.hero.role}</h2>
 
-            <p className="mt-6 text-[15px] lg:text-[16px] leading-7 text-[#5A4A42] max-w-[560px]">{t.hero.desc}</p>
+            <p className="mt-5 sm:mt-6 text-[14px] sm:text-[15px] lg:text-[16px] leading-6 sm:leading-7 text-[#5A4A42] max-w-[560px]">{t.hero.desc}</p>
 
-            <div className="flex flex-wrap gap-3 mt-8">
-              <a href="#projects" className="inline-flex items-center gap-2 bg-[#5A2A3A] text-white px-7 py-3.5 rounded-full font-medium text-sm hover:bg-[#3D1C26] transition-colors shadow-lg shadow-[#5A2A3A]/20">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mt-6 sm:mt-8">
+              <a href="#projects" className="inline-flex items-center justify-center gap-2 bg-[#5A2A3A] text-white px-7 py-3.5 rounded-full font-medium text-sm hover:bg-[#3D1C26] transition-colors shadow-lg shadow-[#5A2A3A]/20">
                 {t.hero.cta1} <ArrowRight size={16} />
               </a>
-              <a href="#contact" className="inline-flex items-center gap-2 bg-white border border-[#E8DDD3] px-7 py-3.5 rounded-full font-medium text-sm hover:bg-[#F2EDE7] transition-colors">
+              <a href="#contact" className="inline-flex items-center justify-center gap-2 bg-white border border-[#E8DDD3] px-7 py-3.5 rounded-full font-medium text-sm hover:bg-[#F2EDE7] transition-colors">
                 {t.hero.cta2} <Mail size={16} className="text-[#8B7355]" />
               </a>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 mt-10 max-w-[420px] border-t border-[#E8DDD3] pt-6">
-              <div>
-                <div className="font-serif text-2xl font-bold text-[#5A2A3A]">20+</div>
-                <div className="text-[11px] tracking-widest uppercase text-[#8B7355]">{t.hero.stats1}</div>
+            <div className="grid grid-cols-3 gap-3 sm:gap-6 mt-8 sm:mt-10 max-w-[420px] border-t border-[#E8DDD3] pt-6">
+              <div className="min-w-0">
+                <div className="font-serif text-xl sm:text-2xl font-bold text-[#5A2A3A]">20+</div>
+                <div className="text-[10px] sm:text-[11px] tracking-wider sm:tracking-widest uppercase text-[#8B7355] leading-tight mt-1">{t.hero.stats1}</div>
               </div>
-              <div>
-                <div className="font-serif text-2xl font-bold text-[#5A2A3A]">15+</div>
-                <div className="text-[11px] tracking-widest uppercase text-[#8B7355]">{t.hero.stats2}</div>
+              <div className="min-w-0">
+                <div className="font-serif text-xl sm:text-2xl font-bold text-[#5A2A3A]">15+</div>
+                <div className="text-[10px] sm:text-[11px] tracking-wider sm:tracking-widest uppercase text-[#8B7355] leading-tight mt-1">{t.hero.stats2}</div>
               </div>
-              <div>
-                <div className="font-serif text-2xl font-bold text-[#5A2A3A]">3+</div>
-                <div className="text-[11px] tracking-widest uppercase text-[#8B7355]">{t.hero.stats3}</div>
+              <div className="min-w-0">
+                <div className="font-serif text-xl sm:text-2xl font-bold text-[#5A2A3A]">3+</div>
+                <div className="text-[10px] sm:text-[11px] tracking-wider sm:tracking-widest uppercase text-[#8B7355] leading-tight mt-1">{t.hero.stats3}</div>
               </div>
             </div>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="relative">
-            <div className="relative bg-[#2D2420] rounded-[32px] border border-[#4A3B32] p-3 shadow-xl shadow-[#2D2420]/30 overflow-hidden">
-              <div className="rounded-[24px] overflow-hidden bg-[#231B17]">
-                <div className="flex items-center gap-2 px-4 py-3 border-b border-[#4A3B32]">
-                  <span className="w-3 h-3 rounded-full bg-[#E0604F]" />
-                  <span className="w-3 h-3 rounded-full bg-[#C5D86D]" />
-                  <span className="w-3 h-3 rounded-full bg-[#7A8B6F]" />
-                  <div className="ml-3 flex items-center gap-2 bg-[#2D2420] border border-[#4A3B32] rounded-t-lg px-3 py-1.5 text-xs font-mono text-[#E8DDD3]">
-                    <Code2 size={12} className="text-[#9B8EC4]" /> developer.ts
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="relative min-w-0 mt-5 mb-7 sm:mt-0 sm:mb-0">
+            <div className="relative bg-[#2D2420] rounded-[24px] sm:rounded-[32px] border border-[#4A3B32] p-2.5 sm:p-3 shadow-xl shadow-[#2D2420]/30 overflow-hidden max-w-full">
+              <div className="rounded-[18px] sm:rounded-[24px] overflow-hidden bg-[#231B17] max-w-full">
+                <div className="flex items-center gap-2 px-3 sm:px-4 py-3 border-b border-[#4A3B32] min-w-0">
+                  <span className="w-3 h-3 shrink-0 rounded-full bg-[#E0604F]" />
+                  <span className="w-3 h-3 shrink-0 rounded-full bg-[#C5D86D]" />
+                  <span className="w-3 h-3 shrink-0 rounded-full bg-[#7A8B6F]" />
+                  <div className="ml-2 sm:ml-3 flex items-center gap-2 bg-[#2D2420] border border-[#4A3B32] rounded-t-lg px-3 py-1.5 text-xs font-mono text-[#E8DDD3] truncate min-w-0">
+                    <Code2 size={12} className="text-[#9B8EC4] shrink-0" /> <span className="truncate">developer.ts</span>
                   </div>
                 </div>
-                <div className="p-5 font-mono text-[12.5px] sm:text-[13.5px] leading-7 overflow-x-auto">
-                  <div className="flex gap-4 whitespace-nowrap"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">1</span><span><span className="text-[#9B8EC4]">const</span> <span className="text-[#E8DDD3]">developer</span> <span className="text-[#8B7355]">=</span> <span className="text-[#E8DDD3]">{"{"}</span></span></div>
-                  <div className="flex gap-4 whitespace-nowrap"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">2</span><span><span className="text-[#E8DDD3]">  name:</span> <span className="text-[#C5D86D]">&quot;Kasmi Haithem&quot;</span><span className="text-[#8B7355]">,</span></span></div>
-                  <div className="flex gap-4 whitespace-nowrap"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">3</span><span><span className="text-[#E8DDD3]">  role:</span> <span className="text-[#C5D86D]">&quot;Full Stack Developer&quot;</span><span className="text-[#8B7355]">,</span></span></div>
-                  <div className="flex gap-4 whitespace-nowrap"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">4</span><span><span className="text-[#E8DDD3]">  stack:</span> <span className="text-[#8B7355]">[</span><span className="text-[#C5D86D]">&quot;Next.js&quot;</span><span className="text-[#8B7355]">,</span> <span className="text-[#C5D86D]">&quot;Node.js&quot;</span><span className="text-[#8B7355]">,</span> <span className="text-[#C5D86D]">&quot;PostgreSQL&quot;</span><span className="text-[#8B7355]">],</span></span></div>
-                  <div className="flex gap-4 whitespace-nowrap"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">5</span><span><span className="text-[#E8DDD3]">  passion:</span> <span className="text-[#C5D86D]">&quot;Building Scalable SaaS &amp; E-Commerce&quot;</span><span className="text-[#8B7355]">,</span></span></div>
-                  <div className="flex gap-4 whitespace-nowrap"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">6</span><span><span className="text-[#E8DDD3]">  status:</span> <span className="text-[#C5D86D]">&quot;Available for Hire&quot;</span></span></div>
-                  <div className="flex gap-4 whitespace-nowrap"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">7</span><span><span className="text-[#E8DDD3]">{"}"}</span><span className="text-[#9B8EC4]">;</span><span className="ml-1 inline-block w-[8px] h-[16px] bg-[#9B8EC4] animate-pulse align-middle" /></span></div>
+                <div className="p-3 sm:p-5 font-mono text-[11px] sm:text-[13.5px] leading-6 sm:leading-7 overflow-hidden">
+                  <div className="flex gap-3 sm:gap-4"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">1</span><span className="min-w-0 flex-1 break-words"><span className="text-[#9B8EC4]">const</span> <span className="text-[#E8DDD3]">developer</span> <span className="text-[#8B7355]">=</span> <span className="text-[#E8DDD3]">{"{"}</span></span></div>
+                  <div className="flex gap-3 sm:gap-4"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">2</span><span className="min-w-0 flex-1 break-words"><span className="text-[#E8DDD3]">  name:</span> <span className="text-[#C5D86D]">&quot;Kasmi Haithem&quot;</span><span className="text-[#8B7355]">,</span></span></div>
+                  <div className="flex gap-3 sm:gap-4"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">3</span><span className="min-w-0 flex-1 break-words"><span className="text-[#E8DDD3]">  role:</span> <span className="text-[#C5D86D]">&quot;Full Stack Developer&quot;</span><span className="text-[#8B7355]">,</span></span></div>
+                  <div className="flex gap-3 sm:gap-4"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">4</span><span className="min-w-0 flex-1 break-words"><span className="text-[#E8DDD3]">  stack:</span> <span className="text-[#8B7355]">[</span><span className="text-[#C5D86D]">&quot;Next.js&quot;</span><span className="text-[#8B7355]">,</span> <span className="text-[#C5D86D]">&quot;Node.js&quot;</span><span className="text-[#8B7355]">,</span> <span className="text-[#C5D86D]">&quot;PostgreSQL&quot;</span><span className="text-[#8B7355]">],</span></span></div>
+                  <div className="flex gap-3 sm:gap-4"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">5</span><span className="min-w-0 flex-1 break-words"><span className="text-[#E8DDD3]">  passion:</span> <span className="text-[#C5D86D]">&quot;Building Scalable SaaS &amp; E-Commerce&quot;</span><span className="text-[#8B7355]">,</span></span></div>
+                  <div className="flex gap-3 sm:gap-4"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">6</span><span className="min-w-0 flex-1 break-words"><span className="text-[#E8DDD3]">  status:</span> <span className="text-[#C5D86D]">&quot;Available for Hire&quot;</span></span></div>
+                  <div className="flex gap-3 sm:gap-4"><span className="w-4 shrink-0 text-right text-[#4A3B32] select-none">7</span><span className="min-w-0 flex-1 break-words"><span className="text-[#E8DDD3]">{"}"}</span><span className="text-[#9B8EC4]">;</span><span className="ml-1 inline-block w-[8px] h-[16px] bg-[#9B8EC4] animate-pulse align-middle" /></span></div>
                 </div>
-                <div className="flex items-center gap-4 px-4 py-2.5 bg-[#5A2A3A] text-white text-[11px] font-mono">
-                  <span className="flex items-center gap-1.5"><GitBranch size={12} /> main</span>
+                <div className="flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2.5 bg-[#5A2A3A] text-white text-[11px] font-mono min-w-0">
+                  <span className="flex items-center gap-1.5 shrink-0"><GitBranch size={12} /> main</span>
                   <span className="hidden sm:inline opacity-70">TypeScript</span>
-                  <span className="ml-auto flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#C5D86D] animate-pulse" /> Available for Hire</span>
+                  <span className="ml-auto flex items-center gap-1.5 truncate"><span className="w-2 h-2 shrink-0 rounded-full bg-[#C5D86D] animate-pulse" /> <span className="truncate">Available for Hire</span></span>
                 </div>
               </div>
             </div>
 
-            <div className="absolute -top-3 -right-2 lg:-right-4 bg-white border border-[#E8DDD3] rounded-2xl px-4 py-3 shadow-lg flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-[#9B8EC4]/20 flex items-center justify-center">
+            <div className="absolute -top-4 right-3 sm:-top-3 sm:-right-2 lg:-right-4 bg-white border border-[#E8DDD3] rounded-2xl px-3 sm:px-4 py-2 sm:py-3 shadow-lg flex items-center gap-2 max-w-[calc(100%-1.5rem)]">
+              <div className="w-8 h-8 shrink-0 rounded-full bg-[#9B8EC4]/20 flex items-center justify-center">
                 <Sparkles size={14} className="text-[#9B8EC4]" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="text-xs font-bold">Clean Code</div>
                 <div className="text-[11px] text-[#8B7355]">Scalable & Fast</div>
               </div>
             </div>
-            <div className="absolute -bottom-4 -left-2 lg:-left-6 bg-[#5A2A3A] text-white rounded-2xl px-5 py-4 shadow-xl">
+            <div className="absolute -bottom-5 left-3 sm:-bottom-4 sm:-left-2 lg:-left-6 bg-[#5A2A3A] text-white rounded-2xl px-4 sm:px-5 py-3 sm:py-4 shadow-xl">
               <div className="text-lg font-bold leading-none">100%</div>
               <div className="text-[11px] opacity-80 tracking-widest uppercase">Client Focused</div>
             </div>
@@ -641,9 +641,9 @@ export default function Home() {
       </section>
 
       <section id="about" className="bg-white border-y border-[#E8DDD3] overflow-hidden">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-16 lg:py-20">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
-            <motion.div initial={{ opacity: 0, x: -60 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.7, ease: "easeOut" }}>
+            <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.7, ease: "easeOut" }}>
               <div className="inline-flex items-center gap-2 text-[#9B8EC4] text-xs font-bold tracking-[0.18em] uppercase mb-3">
                 <span className="w-8 h-[1px] bg-[#9B8EC4]" /> {t.about.subtitle}
               </div>
@@ -665,7 +665,7 @@ export default function Home() {
               </div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: 60 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }} className="bg-[#FFFBF7] rounded-[24px] border border-[#E8DDD3] p-8 shadow-sm">
+            <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }} className="bg-[#FFFBF7] rounded-[24px] border border-[#E8DDD3] p-5 sm:p-8 shadow-sm min-w-0">
               <h3 className="font-serif text-xl font-bold mb-6">At a glance</h3>
               <div className="space-y-5">
                 {[
@@ -688,7 +688,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="skills" className="max-w-[1280px] mx-auto px-6 lg:px-8 py-16">
+      <section id="skills" className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center max-w-2xl mx-auto mb-10">
           <h2 className="font-serif text-3xl lg:text-4xl font-bold text-[#5A2A3A]">{t.skills.title}</h2>
           <p className="text-[#8B7355] mt-3">{t.skills.subtitle}</p>
@@ -720,9 +720,9 @@ export default function Home() {
       </section>
 
       <section id="experience" className="bg-[#FDF8F4] border-y border-[#E8DDD3]">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-16">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-start">
-            <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+            <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
               <div className="inline-flex items-center gap-2 text-[#5A2A3A] text-xs font-bold tracking-[0.18em] uppercase mb-3">
                 <span className="w-6 h-[2px] bg-[#5A2A3A]" /> EXPERTISE
               </div>
@@ -748,7 +748,7 @@ export default function Home() {
               </div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.15 }}>
+            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.15 }}>
               <div className="bg-white border border-[#E8DDD3] rounded-2xl p-1.5 flex gap-1.5 mb-6 shadow-sm">
                 <button onClick={() => setActiveTab("experience")} className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === "experience" ? "bg-[#5A2A3A] text-white shadow" : "text-[#8B7355] hover:bg-[#FFFBF7]"}`}>
                   Experience
@@ -758,11 +758,11 @@ export default function Home() {
                 </button>
               </div>
 
-              <div className="relative border-l-2 border-[#E8DDD3] ml-3 pl-8 space-y-6">
+              <div className="relative border-l-2 rtl:border-l-0 rtl:border-r-2 border-[#E8DDD3] ml-3 rtl:ml-0 rtl:mr-3 pl-8 rtl:pl-0 rtl:pr-8 space-y-6">
                 <AnimatePresence mode="wait">
                   {(activeTab === "experience" ? experienceData : educationData).map((item, i) => (
                     <motion.div key={item.title + activeTab} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ delay: i * 0.07 }} className="relative">
-                      <span className="absolute -left-[38px] top-1.5 w-3 h-3 rounded-full bg-[#5A2A3A] border-2 border-[#FFFBF7] shadow ring-2 ring-[#E8DDD3]" />
+                      <span className="absolute -left-[38px] rtl:left-auto rtl:-right-[38px] top-1.5 w-3 h-3 rounded-full bg-[#5A2A3A] border-2 border-[#FFFBF7] shadow ring-2 ring-[#E8DDD3]" />
                       <h4 className="font-bold text-[#2D2420] leading-tight">{item.title}</h4>
                       <div className="text-xs font-bold text-[#9B8EC4] mt-1">{item.date}</div>
                       <p className="text-sm leading-6 text-[#5A4A42] mt-2">{item.desc}</p>
@@ -776,7 +776,7 @@ export default function Home() {
       </section>
 
       <section id="services" className="bg-[#F2EDE7]/60 border-y border-[#E8DDD3]">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-16">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
             <div>
               <h2 className="font-serif text-3xl lg:text-4xl font-bold text-[#5A2A3A]">{t.services.title}</h2>
@@ -808,7 +808,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="projects" className="max-w-[1280px] mx-auto px-6 lg:px-8 py-16">
+      <section id="projects" className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
             <h2 className="font-serif text-3xl lg:text-4xl font-bold text-[#5A2A3A]">{t.projects.title}</h2>
@@ -865,14 +865,14 @@ export default function Home() {
 
       <AnimatePresence>
         {selectedProject && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4">
             <div className="absolute inset-0 bg-[#2D2420]/60 backdrop-blur-sm" onClick={() => setSelectedProject(null)} />
-            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} className="relative bg-[#FFFBF7] rounded-[24px] max-w-3xl w-full max-h-[90vh] overflow-auto border border-[#E8DDD3] shadow-2xl">
-              <button onClick={() => setSelectedProject(null)} className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-white border border-[#E8DDD3] flex items-center justify-center hover:bg-[#F2EDE7]">
+            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} className="relative bg-[#FFFBF7] rounded-[24px] max-w-3xl w-full max-h-[90vh] max-h-[90dvh] overflow-auto border border-[#E8DDD3] shadow-2xl">
+              <button onClick={() => setSelectedProject(null)} className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-10 w-9 h-9 rounded-full bg-white border border-[#E8DDD3] flex items-center justify-center hover:bg-[#F2EDE7]">
                 <X size={16} />
                               </button>
-              <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-[280px] object-cover" />
-              <div className="p-8">
+              <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-[180px] sm:h-[280px] object-cover" />
+              <div className="p-5 sm:p-8">
                 <div className="inline-flex bg-[#5A2A3A] text-white px-3 py-1 rounded-full text-xs font-bold mb-3">{selectedProject.category}</div>
                 <h3 className="font-serif text-2xl font-bold text-[#5A2A3A]">{selectedProject.title}</h3>
                 <p className="text-[#5A4A42] mt-3 leading-7">{selectedProject.desc}</p>
@@ -900,7 +900,7 @@ export default function Home() {
                   ))}
                 </div>
 
-                <div className="flex gap-3 mt-6">
+                <div className="flex flex-col sm:flex-row gap-3 mt-6">
                   <a href={selectedProject.liveUrl} target="_blank" className="flex-1 bg-white border border-[#E8DDD3] text-[#5A2A3A] py-3 rounded-full text-sm font-semibold flex items-center justify-center gap-2 hover:bg-[#F2EDE7]">
                     <ExternalLink size={16} /> {t.projects.live}
                   </a>
@@ -916,10 +916,10 @@ export default function Home() {
 
       <AnimatePresence>
         {galleryProject && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4">
             <div className="absolute inset-0 bg-[#2D2420]/70 backdrop-blur-sm" onClick={closeGallery} />
-            <motion.div initial={{ y: 20, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0, scale: 0.98 }} className="relative bg-[#2D2420] rounded-[24px] max-w-5xl w-full max-h-[90vh] overflow-hidden border border-[#4A3B32] shadow-2xl flex flex-col">
-              <div className="flex items-center gap-3 px-5 py-4 border-b border-[#4A3B32]">
+            <motion.div initial={{ y: 20, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0, scale: 0.98 }} className="relative bg-[#2D2420] rounded-[24px] max-w-5xl w-full max-h-[90vh] max-h-[90dvh] overflow-hidden border border-[#4A3B32] shadow-2xl flex flex-col">
+              <div className="flex items-center gap-2 sm:gap-3 px-4 sm:px-5 py-4 border-b border-[#4A3B32] min-w-0">
                 <h3 className="font-bold text-white text-sm sm:text-base truncate flex-1">{galleryProject.title}</h3>
                 <span className="text-xs font-mono text-[#8B7355] shrink-0">{galleryIndex + 1} / {galleryProject.gallery.length}</span>
                 <button onClick={closeGallery} className="w-9 h-9 rounded-full bg-[#3A2E28] border border-[#4A3B32] flex items-center justify-center text-white hover:bg-[#5A2A3A] transition-colors shrink-0" aria-label="Close gallery">
@@ -928,21 +928,21 @@ export default function Home() {
               </div>
               <div className="relative flex-1 overflow-hidden bg-[#231B17] flex items-center justify-center min-h-[300px]">
                 <AnimatePresence mode="wait">
-                  <motion.img key={galleryProject.gallery[galleryIndex]} src={galleryProject.gallery[galleryIndex]} alt={galleryProject.title} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }} className="max-h-[62vh] w-auto max-w-full object-contain" />
+                  <motion.img key={galleryProject.gallery[galleryIndex]} src={galleryProject.gallery[galleryIndex]} alt={galleryProject.title} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="max-h-[52vh] sm:max-h-[62vh] w-auto max-w-full object-contain" />
                 </AnimatePresence>
                 {galleryProject.gallery.length > 1 && (
                   <>
-                    <button onClick={galleryPrev} className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#5A2A3A] text-white shadow-lg flex items-center justify-center hover:bg-[#3D1C26] transition-colors" aria-label="Previous screenshot">
+                    <button onClick={galleryPrev} className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#5A2A3A] text-white shadow-lg flex items-center justify-center hover:bg-[#3D1C26] transition-colors" aria-label="Previous screenshot">
                       <ChevronLeft size={20} />
                     </button>
-                    <button onClick={galleryNext} className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#5A2A3A] text-white shadow-lg flex items-center justify-center hover:bg-[#3D1C26] transition-colors" aria-label="Next screenshot">
+                    <button onClick={galleryNext} className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#5A2A3A] text-white shadow-lg flex items-center justify-center hover:bg-[#3D1C26] transition-colors" aria-label="Next screenshot">
                       <ChevronRight size={20} />
                     </button>
                   </>
                 )}
               </div>
               {galleryProject.gallery.length > 1 && (
-                <div className="flex items-center justify-center gap-2 px-5 py-4 border-t border-[#4A3B32]">
+                <div className="flex flex-wrap items-center justify-center gap-2 px-4 sm:px-5 py-4 border-t border-[#4A3B32]">
                   {galleryProject.gallery.map((g, i) => (
                     <button key={g} onClick={() => setGalleryIndex(i)} className={`h-2 rounded-full transition-all ${i === galleryIndex ? "w-6 bg-[#C5D86D]" : "w-2 bg-[#4A3B32] hover:bg-[#8B7355]"}`} aria-label={"Go to screenshot " + (i + 1)} />
                   ))}
@@ -954,14 +954,14 @@ export default function Home() {
       </AnimatePresence>
 
       <section id="location" className="bg-white border-y border-[#E8DDD3]">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-16">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-8">
             <div className="inline-flex items-center gap-2 text-[#9B8EC4] text-xs font-bold tracking-[0.18em] uppercase mb-3">{t.based.label}</div>
             <h2 className="font-serif text-3xl lg:text-4xl font-bold text-[#5A2A3A]">{t.based.title}</h2>
             <p className="text-[#8B7355] mt-2">{t.based.subtitle}</p>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="relative rounded-[24px] overflow-hidden border border-[#E8DDD3] shadow-xl h-[420px] bg-[#F2EDE7]">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="relative rounded-[24px] overflow-hidden border border-[#E8DDD3] shadow-xl h-[380px] sm:h-[420px] bg-[#F2EDE7]">
             <iframe
               title="Algeria map"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d819642.999999!2d5.5!3d36.365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12f6f5b3c3b3b3b3%3A0x0!2sConstantine%2C%20Algeria!5e0!3m2!1sen!2sdz!4v1700000000000"
@@ -972,7 +972,7 @@ export default function Home() {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
-            <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 bg-[#FFFBF7] border border-[#E8DDD3] rounded-2xl p-4 md:p-5 shadow-xl max-w-[280px] flex gap-3">
+            <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:bottom-6 sm:left-6 md:bottom-6 md:left-6 bg-[#FFFBF7] border border-[#E8DDD3] rounded-2xl p-4 md:p-5 shadow-xl sm:max-w-[280px] flex gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#5A2A3A] flex items-center justify-center shrink-0">
                 <MapPin size={18} className="text-white" />
               </div>
@@ -985,7 +985,7 @@ export default function Home() {
                 </a>
               </div>
             </div>
-            <div className="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-2 rounded-xl border border-[#E8DDD3] shadow-sm text-xs font-bold">
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-white/95 backdrop-blur px-3 py-2 rounded-xl border border-[#E8DDD3] shadow-sm text-xs font-bold">
               Constantine<br /><span className="font-normal text-[#8B7355]">Constantine</span>
             </div>
           </motion.div>
@@ -993,9 +993,9 @@ export default function Home() {
       </section>
 
       <section id="contact" className="bg-[#FFFBF7] border-y border-[#E8DDD3]">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-16">
-          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-10">
-            <div>
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 sm:gap-10">
+            <div className="min-w-0">
               <h2 className="font-serif text-3xl lg:text-4xl font-bold text-[#5A2A3A]">{t.contact.title}</h2>
               <p className="text-[#8B7355] mt-2 mb-8">{t.contact.subtitle}</p>
 
@@ -1026,12 +1026,12 @@ export default function Home() {
               </form>
             </div>
 
-            <div className="space-y-6">
-              <div className="bg-white border border-[#E8DDD3] rounded-[24px] p-7">
+            <div className="space-y-6 min-w-0">
+              <div className="bg-white border border-[#E8DDD3] rounded-[24px] p-5 sm:p-7 min-w-0">
                 <h3 className="font-bold mb-4">{t.contact.infoTitle}</h3>
                 <div className="space-y-4 text-sm">
-                  <a href="mailto:kasmihaithem3@gmail.com" className="flex items-center gap-3">
-                    <span className="w-10 h-10 rounded-full bg-[#FFFBF7] border border-[#E8DDD3] flex items-center justify-center"><Mail size={16} className="text-[#5A2A3A]" /></span> kasmihaithem3@gmail.com
+                  <a href="mailto:kasmihaithem3@gmail.com" className="flex items-center gap-3 min-w-0">
+                    <span className="w-10 h-10 shrink-0 rounded-full bg-[#FFFBF7] border border-[#E8DDD3] flex items-center justify-center"><Mail size={16} className="text-[#5A2A3A]" /></span> <span className="break-all min-w-0">kasmihaithem3@gmail.com</span>
                   </a>
                   <div className="flex items-center gap-3">
                     <span className="w-10 h-10 rounded-full bg-[#FFFBF7] border border-[#E8DDD3] flex items-center justify-center"><MapPin size={16} className="text-[#8B7355]" /></span> Algeria • GMT+1 • Remote
@@ -1043,7 +1043,7 @@ export default function Home() {
 
                 <div className="mt-6 pt-6 border-t border-[#E8DDD3]">
                   <div className="text-xs font-bold tracking-widest uppercase text-[#8B7355] mb-3">{t.contact.or}</div>
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <a href="https://www.facebook.com/vKjH0.0" target="_blank" className="flex-1 bg-[#FFFBF7] border border-[#E8DDD3] rounded-full py-2.5 flex items-center justify-center gap-2 text-sm font-medium hover:bg-[#F2EDE7]">
                       <span className="w-6 h-6 rounded-full bg-[#1877F2] text-white flex items-center justify-center text-xs font-bold">f</span> Facebook
                     </a>
@@ -1057,7 +1057,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-[#5A2A3A] text-white rounded-[24px] p-7">
+              <div className="bg-[#5A2A3A] text-white rounded-[24px] p-5 sm:p-7">
                 <h4 className="font-serif text-lg font-bold">Why work with me?</h4>
                 <ul className="mt-4 space-y-2 text-sm opacity-90">
                   <li className="flex gap-2"><Check size={16} className="text-[#C5D86D] mt-0.5" /> Clean, maintainable code</li>
@@ -1072,7 +1072,7 @@ export default function Home() {
       </section>
 
       <footer className="bg-[#2D2420] text-[#E8DDD3] pt-12 pb-8">
-        <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8 pb-8 border-b border-[#4A3B32]">
             <div className="md:col-span-1">
               <div className="flex items-center gap-3 mb-3">
@@ -1112,7 +1112,7 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-white mb-4 text-sm">{t.footer.contact}</h4>
               <ul className="space-y-2 text-sm text-[#8B7355]">
-                <li className="flex items-center gap-2"><Mail size={14} /> kasmihaithem3@gmail.com</li>
+                <li className="flex items-center gap-2 min-w-0"><Mail size={14} className="shrink-0" /> <span className="break-all">kasmihaithem3@gmail.com</span></li>
                 <li className="flex items-center gap-2"><MapPin size={14} /> Algeria • GMT+1</li>
                 <li className="flex items-center gap-2"><Phone size={14} /> Response &lt; 24h</li>
               </ul>
@@ -1126,7 +1126,7 @@ export default function Home() {
 
       <AnimatePresence>
         {showBackToTop && (
-          <motion.button initial={{ opacity: 0, scale: 0.8, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.8, y: 10 }} onClick={scrollToTop} className="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-xl bg-[#5A2A3A] text-white shadow-lg shadow-[#5A2A3A]/30 flex items-center justify-center hover:bg-[#3D1C26] hover:shadow-xl transition-all border border-white/10" aria-label="Back to top">
+          <motion.button initial={{ opacity: 0, scale: 0.8, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.8, y: 10 }} onClick={scrollToTop} className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50 w-11 h-11 rounded-xl bg-[#5A2A3A] text-white shadow-lg shadow-[#5A2A3A]/30 flex items-center justify-center hover:bg-[#3D1C26] hover:shadow-xl transition-all border border-white/10" aria-label="Back to top">
             <ArrowUp size={18} />
           </motion.button>
         )}

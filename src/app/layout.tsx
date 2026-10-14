@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Playfair_Display, IBM_Plex_Sans_Arabic, Amiri } from "next/font/google";
 import "./globals.css";
 
@@ -43,10 +43,16 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className={`${geistSans.variable} ${playfair.variable} ${ibmArabic.variable} ${amiri.variable} min-h-full flex flex-col bg-[#FFFBF7]`}>{children}</body>
+      <body className={`${geistSans.variable} ${playfair.variable} ${ibmArabic.variable} ${amiri.variable} min-h-full flex flex-col bg-[#FFFBF7] overflow-x-clip w-full max-w-full`}>{children}</body>
     </html>
   );
 }

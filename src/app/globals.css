@@ -30,12 +30,23 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  overflow-x: clip;
+  max-width: 100%;
+  width: 100%;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
 }
 
 :lang(ar) {
