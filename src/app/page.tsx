@@ -451,6 +451,13 @@ export default function Home() {
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
+  const goTo = (id: string) => {
+    setMobileOpen(false);
+    window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
   const openGallery = (p: (typeof projectsData)[0]) => {
     setGalleryProject(p);
     setGalleryIndex(0);
@@ -509,6 +516,8 @@ export default function Home() {
                 <button
                   key={l}
                   onClick={() => setLang(l)}
+                  aria-pressed={lang === l}
+                  aria-label={`Switch language to ${l === "en" ? "English" : l === "fr" ? "French" : "Arabic"}`}
                   className={`px-3 py-1.5 rounded-full text-xs font-semibold uppercase transition-all ${lang === l ? "bg-[#5A2A3A] text-white shadow" : "text-[#4A3B32] hover:text-[#5A2A3A]"}`}
                 >
                   {l}
@@ -518,7 +527,7 @@ export default function Home() {
             <a href="#contact" className="hidden md:inline-flex items-center gap-2 bg-[#5A2A3A] text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-[#3D1C26] transition-colors">
               {lang === "ar" ? "تواصل معي" : lang === "fr" ? "Me contacter" : "Hire Me"} <ArrowUpRight size={16} />
             </a>
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden p-2">
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden p-2 -me-1" aria-label={mobileOpen ? "Close menu" : "Open menu"} aria-expanded={mobileOpen} aria-controls="mobile-menu">
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
@@ -526,15 +535,26 @@ export default function Home() {
 
         <AnimatePresence>
           {mobileOpen && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="lg:hidden border-t border-[#E8DDD3] bg-[#FFFBF7] px-4 sm:px-6 py-6 space-y-4 overflow-hidden">
-              {Object.entries(t.nav).map(([key, label]) => (
-                <a key={key} onClick={() => setMobileOpen(false)} href={`#${key === "home" ? "home" : key}`} className="block text-sm font-medium">
-                  {label}
-                </a>
-              ))}
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} id="mobile-menu" className="lg:hidden border-t border-[#E8DDD3] bg-[#FFFBF7] px-4 sm:px-6 py-6 space-y-4 overflow-hidden">
+              {Object.entries(t.nav).map(([key, label]) => {
+                const target = key === "home" ? "home" : key;
+                return (
+                  <a
+                    key={key}
+                    href={`#${target}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goTo(target);
+                    }}
+                    className="block text-sm font-medium py-2"
+                  >
+                    {label}
+                  </a>
+                );
+              })}
               <div className="flex gap-2 pt-2">
                 {(["en", "fr", "ar"] as Lang[]).map((l) => (
-                  <button key={l} onClick={() => setLang(l)} className={`flex-1 py-2 rounded-full text-xs font-bold border ${lang === l ? "bg-[#5A2A3A] text-white border-[#5A2A3A]" : "bg-white border-[#E8DDD3]"}`}>
+                  <button key={l} onClick={() => setLang(l)} aria-pressed={lang === l} aria-label={`Switch language to ${l === "en" ? "English" : l === "fr" ? "French" : "Arabic"}`} className={`flex-1 py-2 rounded-full text-xs font-bold border ${lang === l ? "bg-[#5A2A3A] text-white border-[#5A2A3A]" : "bg-white border-[#E8DDD3]"}`}>
                     {l.toUpperCase()}
                   </button>
                 ))}
@@ -750,10 +770,10 @@ export default function Home() {
 
             <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.15 }}>
               <div className="bg-white border border-[#E8DDD3] rounded-2xl p-1.5 flex gap-1.5 mb-6 shadow-sm">
-                <button onClick={() => setActiveTab("experience")} className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === "experience" ? "bg-[#5A2A3A] text-white shadow" : "text-[#8B7355] hover:bg-[#FFFBF7]"}`}>
+                <button onClick={() => setActiveTab("experience")} aria-pressed={activeTab === "experience"} className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === "experience" ? "bg-[#5A2A3A] text-white shadow" : "text-[#8B7355] hover:bg-[#FFFBF7]"}`}>
                   Experience
                 </button>
-                <button onClick={() => setActiveTab("education")} className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === "education" ? "bg-[#5A2A3A] text-white shadow" : "text-[#8B7355] hover:bg-[#FFFBF7]"}`}>
+                <button onClick={() => setActiveTab("education")} aria-pressed={activeTab === "education"} className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === "education" ? "bg-[#5A2A3A] text-white shadow" : "text-[#8B7355] hover:bg-[#FFFBF7]"}`}>
                   Education
                 </button>
               </div>
@@ -821,6 +841,7 @@ export default function Home() {
             <button
               key={cat}
               onClick={() => setFilter(cat)}
+              aria-pressed={filter === cat}
               className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all ${filter === cat ? "bg-[#5A2A3A] text-white border-[#5A2A3A] shadow" : "bg-white border-[#E8DDD3] hover:bg-[#F2EDE7]"}`}
             >
               {cat}
@@ -867,8 +888,8 @@ export default function Home() {
         {selectedProject && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4">
             <div className="absolute inset-0 bg-[#2D2420]/60 backdrop-blur-sm" onClick={() => setSelectedProject(null)} />
-            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} className="relative bg-[#FFFBF7] rounded-[24px] max-w-3xl w-full max-h-[90vh] max-h-[90dvh] overflow-auto border border-[#E8DDD3] shadow-2xl">
-              <button onClick={() => setSelectedProject(null)} className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-10 w-9 h-9 rounded-full bg-white border border-[#E8DDD3] flex items-center justify-center hover:bg-[#F2EDE7]">
+            <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} role="dialog" aria-modal="true" aria-label={selectedProject.title} className="relative bg-[#FFFBF7] rounded-[24px] max-w-3xl w-full max-h-[90vh] max-h-[90dvh] overflow-auto border border-[#E8DDD3] shadow-2xl">
+              <button onClick={() => setSelectedProject(null)} aria-label="Close project details" className="absolute top-4 right-4 rtl:right-auto rtl:left-4 z-10 w-9 h-9 rounded-full bg-white border border-[#E8DDD3] flex items-center justify-center hover:bg-[#F2EDE7]">
                 <X size={16} />
                               </button>
               <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-[180px] sm:h-[280px] object-cover" />
@@ -918,7 +939,7 @@ export default function Home() {
         {galleryProject && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[110] flex items-center justify-center p-3 sm:p-4">
             <div className="absolute inset-0 bg-[#2D2420]/70 backdrop-blur-sm" onClick={closeGallery} />
-            <motion.div initial={{ y: 20, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0, scale: 0.98 }} className="relative bg-[#2D2420] rounded-[24px] max-w-5xl w-full max-h-[90vh] max-h-[90dvh] overflow-hidden border border-[#4A3B32] shadow-2xl flex flex-col">
+            <motion.div initial={{ y: 20, opacity: 0, scale: 0.98 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 20, opacity: 0, scale: 0.98 }} role="dialog" aria-modal="true" aria-label={`${galleryProject.title} screenshots`} className="relative bg-[#2D2420] rounded-[24px] max-w-5xl w-full max-h-[90vh] max-h-[90dvh] overflow-hidden border border-[#4A3B32] shadow-2xl flex flex-col">
               <div className="flex items-center gap-2 sm:gap-3 px-4 sm:px-5 py-4 border-b border-[#4A3B32] min-w-0">
                 <h3 className="font-bold text-white text-sm sm:text-base truncate flex-1">{galleryProject.title}</h3>
                 <span className="text-xs font-mono text-[#8B7355] shrink-0">{galleryIndex + 1} / {galleryProject.gallery.length}</span>
@@ -1002,21 +1023,21 @@ export default function Home() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold tracking-wide text-[#4A3B32]">{t.contact.name}</label>
-                    <input required name="name" placeholder="Kasmi Haithem" className="mt-1.5 w-full bg-white border border-[#E8DDD3] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#9B8EC4] focus:ring-2 focus:ring-[#9B8EC4]/20" />
+                    <label htmlFor="contact-name" className="text-xs font-bold tracking-wide text-[#4A3B32]">{t.contact.name}</label>
+                    <input required id="contact-name" name="name" autoComplete="name" placeholder="Kasmi Haithem" className="mt-1.5 w-full bg-white border border-[#E8DDD3] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#9B8EC4] focus:ring-2 focus:ring-[#9B8EC4]/20" />
                   </div>
                   <div>
-                    <label className="text-xs font-bold tracking-wide text-[#4A3B32]">{t.contact.email}</label>
-                    <input required name="email" type="email" placeholder="kasmihaithem3@gmail.com" className="mt-1.5 w-full bg-white border border-[#E8DDD3] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#9B8EC4] focus:ring-2 focus:ring-[#9B8EC4]/20" />
+                    <label htmlFor="contact-email" className="text-xs font-bold tracking-wide text-[#4A3B32]">{t.contact.email}</label>
+                    <input required id="contact-email" name="email" type="email" autoComplete="email" placeholder="kasmihaithem3@gmail.com" className="mt-1.5 w-full bg-white border border-[#E8DDD3] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#9B8EC4] focus:ring-2 focus:ring-[#9B8EC4]/20" />
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs font-bold tracking-wide text-[#4A3B32]">{t.contact.subject}</label>
-                  <input required name="subject" placeholder={lang === "ar" ? "مثال: متجر إلكتروني" : "E.g. E-commerce project"} className="mt-1.5 w-full bg-white border border-[#E8DDD3] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#9B8EC4] focus:ring-2 focus:ring-[#9B8EC4]/20" />
+                    <label htmlFor="contact-subject" className="text-xs font-bold tracking-wide text-[#4A3B32]">{t.contact.subject}</label>
+                    <input required id="contact-subject" name="subject" placeholder={lang === "ar" ? "مثال: متجر إلكتروني" : "E.g. E-commerce project"} className="mt-1.5 w-full bg-white border border-[#E8DDD3] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#9B8EC4] focus:ring-2 focus:ring-[#9B8EC4]/20" />
                 </div>
                 <div>
-                  <label className="text-xs font-bold tracking-wide text-[#4A3B32]">Message</label>
-                  <textarea required name="message" rows={4} placeholder={t.contact.message} className="mt-1.5 w-full bg-white border border-[#E8DDD3] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#9B8EC4] focus:ring-2 focus:ring-[#9B8EC4]/20 resize-none" />
+                    <label htmlFor="contact-message" className="text-xs font-bold tracking-wide text-[#4A3B32]">Message</label>
+                    <textarea required id="contact-message" name="message" rows={4} placeholder={t.contact.message} className="mt-1.5 w-full bg-white border border-[#E8DDD3] rounded-2xl px-4 py-3 text-sm outline-none focus:border-[#9B8EC4] focus:ring-2 focus:ring-[#9B8EC4]/20 resize-none" />
                 </div>
                 <button type="submit" disabled={formSending} className="w-full bg-[#5A2A3A] text-white py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 hover:bg-[#3D1C26] transition-colors disabled:opacity-60">
                   <Send size={16} /> {formSending ? t.contact.sending : t.contact.send}
@@ -1084,10 +1105,10 @@ export default function Home() {
               </div>
               <p className="text-sm leading-6 text-[#8B7355] mt-3">{t.footer.description}</p>
               <div className="flex gap-2 mt-4">
-                <a href="https://github.com/kasmi-abc" target="_blank" className="w-9 h-9 rounded-full bg-[#3A2E28] border border-[#4A3B32] flex items-center justify-center hover:bg-[#5A2A3A] transition-colors"><Code2 size={16} /></a>
-                <a href="https://linkedin.com" target="_blank" className="w-9 h-9 rounded-full bg-[#3A2E28] border border-[#4A3B32] flex items-center justify-center hover:bg-[#5A2A3A] transition-colors"><Briefcase size={16} /></a>
-                <a href="https://t.me/aresiva" target="_blank" className="w-9 h-9 rounded-full bg-[#3A2E28] border border-[#4A3B32] flex items-center justify-center hover:bg-[#5A2A3A] transition-colors"><Send size={16} /></a>
-                <a href="mailto:kasmihaithem3@gmail.com" className="w-9 h-9 rounded-full bg-[#3A2E28] border border-[#4A3B32] flex items-center justify-center hover:bg-[#5A2A3A] transition-colors"><Mail size={16} /></a>
+                <a href="https://github.com/kasmi-abc" target="_blank" aria-label="GitHub profile" className="w-9 h-9 rounded-full bg-[#3A2E28] border border-[#4A3B32] flex items-center justify-center hover:bg-[#5A2A3A] transition-colors"><Code2 size={16} /></a>
+                <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn profile" className="w-9 h-9 rounded-full bg-[#3A2E28] border border-[#4A3B32] flex items-center justify-center hover:bg-[#5A2A3A] transition-colors"><Briefcase size={16} /></a>
+                <a href="https://t.me/aresiva" target="_blank" aria-label="Telegram contact" className="w-9 h-9 rounded-full bg-[#3A2E28] border border-[#4A3B32] flex items-center justify-center hover:bg-[#5A2A3A] transition-colors"><Send size={16} /></a>
+                <a href="mailto:kasmihaithem3@gmail.com" aria-label="Send email" className="w-9 h-9 rounded-full bg-[#3A2E28] border border-[#4A3B32] flex items-center justify-center hover:bg-[#5A2A3A] transition-colors"><Mail size={16} /></a>
               </div>
             </div>
             <div>
