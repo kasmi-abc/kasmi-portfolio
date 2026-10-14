@@ -93,7 +93,7 @@ const translations = {
       title: "Based in Algeria",
       subtitle: "Open to remote collaboration worldwide.",
       primaryBase: "PRIMARY BASE",
-      location: "Algeria, Algeria",
+      location: "Algiers, Algeria",
       timezone: "GMT+1 • Remote-friendly",
       openMaps: "Open in Google Maps",
     },
@@ -164,7 +164,7 @@ const translations = {
       title: "Basé en Algérie",
       subtitle: "Ouvert à la collaboration à distance dans le monde entier.",
       primaryBase: "BASE PRINCIPALE",
-      location: "Algérie",
+      location: "Alger, Algérie",
       timezone: "GMT+1 • Remote-friendly",
       openMaps: "Ouvrir dans Google Maps",
     },
@@ -235,7 +235,7 @@ const translations = {
       title: "مقيم في الجزائر",
       subtitle: "متاح للعمل عن بعد مع جميع أنحاء العالم.",
       primaryBase: "المقر الرئيسي",
-      location: "الجزائر",
+      location: "الجزائر العاصمة",
       timezone: "GMT+1 • متاح عن بعد",
       openMaps: "فتح في خرائط Google",
     },
@@ -964,7 +964,7 @@ export default function Home() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="relative rounded-[24px] overflow-hidden border border-[#E8DDD3] shadow-xl h-[380px] sm:h-[420px] bg-[#F2EDE7]">
             <iframe
               title="Algeria map"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d819642.999999!2d5.5!3d36.365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12f6f5b3c3b3b3b3%3A0x0!2sConstantine%2C%20Algeria!5e0!3m2!1sen!2sdz!4v1700000000000"
+              src="https://maps.google.com/maps?q=Algiers,Algeria&t=&z=11&ie=UTF8&iwloc=&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -980,13 +980,13 @@ export default function Home() {
                 <div className="text-[11px] font-bold tracking-widest uppercase text-[#8B7355]">{t.based.primaryBase}</div>
                 <div className="font-bold text-[#2D2420] text-sm mt-0.5">{t.based.location}</div>
                 <div className="text-xs text-[#8B7355] mt-1">{t.based.timezone}</div>
-                <a href="https://maps.google.com/?q=Constantine,Algeria" target="_blank" className="inline-flex items-center gap-1 text-xs font-bold text-[#5A2A3A] mt-2 hover:gap-2 transition-all">
+                <a href="https://maps.google.com/?q=Algiers,Algeria" target="_blank" className="inline-flex items-center gap-1 text-xs font-bold text-[#5A2A3A] mt-2 hover:gap-2 transition-all">
                   {t.based.openMaps} <ArrowUpRight size={12} />
                 </a>
               </div>
             </div>
             <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-white/95 backdrop-blur px-3 py-2 rounded-xl border border-[#E8DDD3] shadow-sm text-xs font-bold">
-              Constantine<br /><span className="font-normal text-[#8B7355]">Constantine</span>
+              Algiers<br /><span className="font-normal text-[#8B7355]">Algeria</span>
             </div>
           </motion.div>
         </div>
