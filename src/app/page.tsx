@@ -399,6 +399,7 @@ export default function Home() {
   const [formStatus, setFormStatus] = useState("");
   const [formSending, setFormSending] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
   const [activeTab, setActiveTab] = useState<"experience" | "education">("experience");
   const t = translations[lang];
   const isRTL = lang === "ar";
@@ -416,6 +417,23 @@ export default function Home() {
     const handleScroll = () => setShowBackToTop(window.scrollY > 500);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const ids = ["home", "about", "skills", "experience", "projects", "contact"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px" }
+    );
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -502,12 +520,22 @@ export default function Home() {
             </div>
           </a>
 
-          <nav className="hidden lg:flex items-center gap-8">
-            {Object.entries(t.nav).map(([key, label]) => (
-              <a key={key} href={`#${key === "home" ? "home" : key}`} className="text-[13px] tracking-wide font-medium text-[#4A3B32] hover:text-[#5A2A3A] transition-colors">
-                {label}
-              </a>
-            ))}
+          <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+            {Object.entries(t.nav).map(([key, label]) => {
+              const target = key === "home" ? "home" : key;
+              const isActive = activeSection === target;
+              return (
+                <a
+                  key={key}
+                  href={`#${target}`}
+                  aria-current={isActive ? "true" : undefined}
+                  className={`relative text-[13px] tracking-wide font-medium transition-colors ${isActive ? "text-[#5A2A3A] font-semibold" : "text-[#4A3B32] hover:text-[#5A2A3A]"}`}
+                >
+                  {label}
+                  {isActive && <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#5A2A3A]" aria-hidden="true" />}
+                </a>
+              );
+            })}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -546,7 +574,7 @@ export default function Home() {
                       e.preventDefault();
                       goTo(target);
                     }}
-                    className="block text-sm font-medium py-2"
+                    className={`block text-sm font-medium py-2 transition-colors ${activeSection === target ? "text-[#5A2A3A] font-bold" : ""}`}
                   >
                     {label}
                   </a>
